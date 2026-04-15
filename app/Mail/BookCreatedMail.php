@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Models\Book;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -9,14 +10,14 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class BookCreated extends Mailable
+class BookCreatedMail extends Mailable
 {
     use Queueable, SerializesModels;
 
     /**
      * Create a new message instance.
      */
-    public function __construct()
+    public function __construct(public Book $book)
     {
         //
     }
@@ -28,7 +29,8 @@ class BookCreated extends Mailable
     {
         return new Envelope(
             subject: 'Book Created',
-            from: 'jan@jan.com'
+            from: 'abc@abc.com'
+
         );
     }
 

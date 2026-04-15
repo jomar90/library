@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Mail\BookCreated;
+use App\Events\BookCreatedEvent;
+use App\Http\Requests\StoreBookRequest;
+use App\Http\Requests\UpdateBookRequest;
 use App\Models\Book;
 use App\Models\Publisher;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Mail;
-
 class BookController extends Controller
 {
     /**
@@ -40,27 +41,18 @@ class BookController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store()
+    public function store(StoreBookRequest $request)
     {
-        request()->validate([
-            'title' => 'required|min:1',
-            'author' => 'required|min:1',
-            'pages' => 'required|integer|min:1'
+
+        $book = Book::create([
+            ...$request->validated(),
+            'user_id' => auth()->id()
         ]);
 
-        Book::create([
-            'title' => request('title'),
-            'author' => request('author'),
-            'publication_year' => request('publication_year'),
-            'pages' => request('pages'),
-            'publisher_id' => request('publisher_id'),
-        ]);
 
-        // Mail::to($book->publisher->user)->queue(
-        //     new BookCreated($book)
-        // );
+        event(new BookCreatedEvent($book));
 
-        return redirect('/books')
+        return redirect()->route('books.index')
             ->with('success', 'Book added successfully.');
     }
 
@@ -73,31 +65,18 @@ class BookController extends Controller
      */
     public function edit(Book $book)
     {
-        Gate::authorize('update-book', $book);
-
-        return view('books.edit', compact('book'));
+        return view('books.edit', [
+            'book' => $book,
+            'publishers' => Publisher::all()
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Book $book)
+    public function update(UpdateBookRequest $request, Book $book)
     {
-        // Gate::authorize('edit-book', $book);
-
-        request()->validate([
-            'title'  => 'required|string|min:1',
-            'author' => 'required|string|min:1',
-            'publication_year' => 'required|integer|min:1',
-            'pages'  => 'required|integer|min:1',
-        ]);
-
-        $book->update([
-            'title' => request('title'),
-            'author' => request('author'),
-            'publication_year' => request('publication_year'),
-            'pages' => request('pages'),
-        ]);
+        $book->update($request->validated());
 
         return redirect('/books/' . $book->id)
             ->with('success', 'Book updated successfully.');
@@ -108,7 +87,7 @@ class BookController extends Controller
      */
     public function destroy(Book $book)
     {
-        Gate::authorize('delete-book', $book);
+        Gate::authorize('delete', $book);
 
         $book->delete();
 

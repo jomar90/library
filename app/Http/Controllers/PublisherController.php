@@ -71,10 +71,9 @@ class PublisherController extends Controller
     public function update(Request $request, Publisher $publisher)
     {
         request()->validate([
-            'name' => 'required',
-            'min:3',
-            'email' => 'required',
-            'email',
+            'name' => 'required|min:3',
+            'email' => 'required' |
+                'email'
             // 'unique:publishers,email,' . $publisher->id
         ]);
 

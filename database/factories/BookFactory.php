@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Publisher;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -22,7 +23,8 @@ class BookFactory extends Factory
             'publisher_id' => Publisher::factory(),
             'author' => fake()->name(),
             'publication_year' => fake()->year(),
-            'pages' => fake()->numberBetween(100, 1000)
+            'pages' => fake()->numberBetween(100, 1000),
+            'user_id' => User::factory()
         ];
     }
 }

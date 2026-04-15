@@ -96,6 +96,25 @@
                             @enderror
                         </div>
                     </div>
+
+                    <div class="sm:col-span-4">
+                        <label for="publisher_id" class="block text-sm font-medium leading-6 text-gray-900">Publisher</label>
+                        <div class="mt-2">
+                            <select name="publisher_id" id="publisher_id" class="border-gray-300 rounded-md shadow-sm w-full" required>
+                                <option value="" disabled>Select a publisher</option>
+                                @foreach ($publishers as $publisher)
+                                    <option value="{{ $publisher->id }}"
+                                        {{ $book->publisher_id == $publisher->id ? 'selected' : '' }}>
+                                        {{ $publisher->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+
+                            @error('publisher_id')
+                                <p class="text-xs text-red-500 font-semibold mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

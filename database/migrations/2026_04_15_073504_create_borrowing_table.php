@@ -11,14 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('books', function (Blueprint $table) {
+        Schema::create('borrowing', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(\App\Models\Publisher::class);
-            $table->foreignIdFor(\App\Models\User::class);
-            $table->string('title');
-            $table->string('author');
-            $table->unsignedInteger('publication_year');
-            $table->unsignedInteger('pages');
             $table->timestamps();
         });
     }
@@ -28,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('books');
+        Schema::dropIfExists('borrowing');
     }
 };
