@@ -20,4 +20,23 @@ class Book extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function borrowings()
+    {
+        return $this->hasMany(Borrowing::class);
+    }
+
+    public function isBorrowed()
+    {
+        return $this->borrowings()
+            ->whereNull('return_date')
+            ->exists();
+    }
+
+    public function statusLabel()
+    {
+        return $this->isBorrowed()
+            ? __('books.borrowed')
+            : __('books.available');
+    }
 }

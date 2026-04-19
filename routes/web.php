@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\BorrowingConroller;
 use App\Http\Controllers\EmailVerificationController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\PageController;
@@ -30,9 +31,15 @@ use Illuminate\Support\Facades\Route;
 Route::view('/', 'home');
 Route::view('/about', 'about');
 
+Route::get('/lang/{locale}', function ($locale) {
+    session(['locale' => $locale]);
+    return redirect()->back();
+});
+
 Route::get('/books', [BookController::class, 'index'])->name('books.index');
 Route::get('books/create', [BookController::class, 'create'])->middleware('auth');
 Route::post('/books', [BookController::class, 'store'])->middleware('auth');
+Route::get('/books/report', [BookController::class, 'report'])->name('books.report');
 Route::get('/books/{book}', [BookController::class, 'show']);
 
 Route::get('/books/{book}/edit', [BookController::class, 'edit'])
@@ -41,6 +48,10 @@ Route::get('/books/{book}/edit', [BookController::class, 'edit'])
 
 Route::patch('/books/{book}', [BookController::class, 'update'])->middleware('auth');
 Route::delete('/books/{book}', [BookController::class, 'destroy'])->middleware('auth');
+
+Route::post('/books/{book}/borrow', [BorrowingConroller::class, 'borrow'])->name('books.borrow')->middleware('auth');
+Route::post('/books/{book}/return', [BorrowingConroller::class, 'return']);
+
 
 Route::get('/register', [RegisterController::class, 'create']);
 Route::post('/register', [RegisterController::class, 'store']);

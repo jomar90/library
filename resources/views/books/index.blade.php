@@ -1,7 +1,14 @@
 <x-layout>
     <x-slot:heading>
-        Books List
+        {{ __('books.title') }}
     </x-slot:heading>
+
+    @auth
+    <a href="{{ route('books.report') }}">Book Report</a>
+@endauth
+
+        <a href="/lang/en">En</a> |
+        <a href="/lang/nl">NL</a>
 
     <form class="flex items-center gap-2 mb-6">
         <div class="relative">
@@ -21,15 +28,55 @@
 
     <div class="space-y-4">
         @foreach ($books as $book)
-            <a href="/books/{{ $book->id }}" class="block px-4 py-6 border border-gray-200 rounded-lg">
-                <div class="font-bold text-blue-500 text-sm">{{ $book->publisher?->name }}</div>
+            <div class="px-4 py-6 border border-gray-200 rounded-lg">
+
+                <!-- Publisher -->
+                <div class="font-bold text-blue-500 text-sm">
+                    <a href="/publishers/{{ $book->publisher?->id }}">
+                        {{ $book->publisher?->name }}
+                    </a>
+                </div>
 
                 <div>
-                    <strong class="text">{{ $book->title }}:</strong> written by {{ $book->author }}.
+                    <strong>
+                        <a href="/books/{{ $book->id }}" class="text-blue-600">
+                            {{ $book->title }}
+                        </a>
+                    </strong>
+                    : written by {{ $book->author }}.
                 </div>
-            </a>
-        @endforeach
 
+                {{-- @php
+                    $isBorrowed = $book->borrowings->whereNull('return_date')->count();
+                @endphp --}}
+
+            <div class="mt-3">
+                @if ($book->isBorrowed())
+                    <span class="text-red-500 font-semibold">
+                        {{ $book->statusLabel() }}
+                    </span>
+
+                    <form action="/books/{{ $book->id }}/return" method="POST" class="inline">
+                        @csrf
+                        <button type="submit" class="ml-3 text-sm text-blue-600">
+                            {{ __('books.return') }}
+                        </button>
+                    </form>
+                @else
+                    <span class="text-green-500 font-semibold">
+                        {{ $book->statusLabel() }}
+                    </span>
+
+                    <form action="/books/{{ $book->id }}/borrow" method="POST" class="inline">
+                        @csrf
+                        <button type="submit" class="ml-3 text-sm text-blue-600">
+                            {{ __('books.borrow') }}
+                        </button>
+                    </form>
+                @endif
+            </div>
+            </div>
+        @endforeach
         <div>
             {{ $books->links() }}
         </div>

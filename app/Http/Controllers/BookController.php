@@ -7,9 +7,12 @@ use App\Http\Requests\StoreBookRequest;
 use App\Http\Requests\UpdateBookRequest;
 use App\Models\Book;
 use App\Models\Publisher;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Mail;
+
 class BookController extends Controller
 {
     /**
@@ -18,8 +21,34 @@ class BookController extends Controller
     public function index()
     {
         // dd('index');
-        $books = Book::with('publisher')->latest()->paginate(5);
+        $books = Book::with('borrowings', 'publisher')->latest()->paginate(5);
         return view('books.index', compact('books'));
+    }
+
+    public function report()
+    {
+        // $books = DB::table('books')
+        //     ->leftJoin('borrowings', function ($join) {
+        //         $join->on('books.id', '=', 'borrowings.book_id')
+        //             ->whereNull('borrowings.return_date');
+        //     })
+        //     ->select(
+        //         'books.id',
+        //         'books.title',
+        //         DB::raw('CASE WHEN COUNT(borrowings.id) > 0 THEN 1 ELSE 0 END as is_borrowed')
+        //     )
+        //     ->groupBy('books.id', 'books.title')
+        // ->get();
+
+        $books = Book::select('books.*')
+            ->withCount([
+                'borrowings as is_borrowed' => function (Builder $query) {
+                    $query->whereNull('return_date');
+                }
+            ])
+            ->get();
+
+        return view('books.report', compact('books'));
     }
 
     /**
@@ -34,7 +63,6 @@ class BookController extends Controller
 
     public function show(Book $book)
     {
-
         return view('books.show', compact('book'));
     }
 
