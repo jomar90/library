@@ -1,39 +1,57 @@
-# 📚 Laravel Library App
+# Library Management System
 
-A simple library management application built with Laravel.
+A Laravel 12 library management application built as a portfolio project to explore real-world business logic, authorization, API development, testing, and localization.
 
-## 🚀 Features
+## Features
 
-- Books CRUD (Create, Read, Update, Delete)
-- Publishers CRUD
-- Book ↔ Publisher relationship
-- Pagination for listings
-- Form validation
-- Basic authorization (users can edit their own books)
+### User Roles
 
-## 🛠 Tech Stack
+* Admin: full access to all resources
+* User: can create and manage their own books
+* Member: read-only access to the catalogue
 
-- PHP
-- Laravel
-- MySQL
-- Blade (Laravel templating)
+### Library Management
 
-## 📌 Project Status
+* Book management
+* Publisher management
+* Borrowing and return system
+* Ownership-based authorization
+* Policy-based access control
 
-This project is actively being developed.
-Upcoming improvements:
+### API
 
-- Improve authorization (policies)
-- UI/UX improvements
-- Additional features
+* RESTful API endpoints
+* API authentication
+* Rate limiting
+* Resource responses
 
-## ⚙️ Installation
+### Technical Features
 
-```bash
-git clone https://github.com/jomar90/library.git
-cd library
-composer install
-cp .env.example .env
-php artisan key:generate
-php artisan migrate
-php artisan serve
+* Laravel 12
+* PHPUnit feature and unit testing
+* Localization (English and Dutch)
+* Eloquent relationships
+* Service container bindings
+* Event and listener implementation
+* Third-party API integration
+* PHPStan static analysis
+
+## Database Structure
+
+Main entities:
+
+* Users
+* Members
+* Books
+* Publishers
+* Borrowings
+
+## Project Status
+
+Active development.
+
+Core functionality is implemented and tested. Additional features, UI improvements, and API enhancements are being added incrementally.
+
+## Screenshots
+
+Screenshots will be added soon.
