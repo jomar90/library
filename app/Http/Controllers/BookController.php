@@ -9,9 +9,8 @@ use App\Models\Book;
 use App\Models\Publisher;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Mail;
 
 class BookController extends Controller
 {
@@ -20,31 +19,25 @@ class BookController extends Controller
      */
     public function index()
     {
-        // dd('index');
-        $books = Book::with('borrowings', 'publisher')->latest()->paginate(5);
+        $page = request('page', 1);
+
+        $books = Cache::remember('books' . $page, 60, function () {
+            return Book::with('borrowings', 'publisher')
+                ->latest()
+                ->paginate(5);
+        });
+
         return view('books.index', compact('books'));
     }
 
     public function report()
     {
-        // $books = DB::table('books')
-        //     ->leftJoin('borrowings', function ($join) {
-        //         $join->on('books.id', '=', 'borrowings.book_id')
-        //             ->whereNull('borrowings.return_date');
-        //     })
-        //     ->select(
-        //         'books.id',
-        //         'books.title',
-        //         DB::raw('CASE WHEN COUNT(borrowings.id) > 0 THEN 1 ELSE 0 END as is_borrowed')
-        //     )
-        //     ->groupBy('books.id', 'books.title')
-        // ->get();
 
         $books = Book::select('books.*')
             ->withCount([
                 'borrowings as is_borrowed' => function (Builder $query) {
                     $query->whereNull('return_date');
-                }
+            },
             ])
             ->get();
 
@@ -57,7 +50,7 @@ class BookController extends Controller
     public function create()
     {
         return view('books.create', [
-            'publishers' => Publisher::all()
+            'publishers' => Publisher::all(),
         ]);
     }
 
@@ -74,9 +67,8 @@ class BookController extends Controller
 
         $book = Book::create([
             ...$request->validated(),
-            'user_id' => auth()->id()
+            'user_id' => auth()->id(),
         ]);
-
 
         event(new BookCreatedEvent($book));
 
@@ -95,7 +87,7 @@ class BookController extends Controller
     {
         return view('books.edit', [
             'book' => $book,
-            'publishers' => Publisher::all()
+            'publishers' => Publisher::all(),
         ]);
     }
 
@@ -123,3 +115,4 @@ class BookController extends Controller
             ->with('success', 'Book deleted successfully.');
     }
 }
+

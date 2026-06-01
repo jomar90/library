@@ -1,73 +1,59 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Providers;
 
 use App\Exceptions\BookNotBorrowedException;
 use App\Exceptions\BookUnavailableException;
 use App\Models\Book;
-use App\Models\Borrowing;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
-class BorrowingController extends Controller
+class BorrowingService
 {
-    public function index()
-    {
-        $books = Book::with('borrowings', 'publisher')->paginate(5);
-        return view('books.index', compact('books'));
-    }
-
-    public function borrow(Book $book)
+    public function borrow(Book $book, int $userId): void
     {
         if ($book->isBorrowed()) {
-
             Log::warning('Borrow failed: book already borrowed', [
                 'book_id' => $book->id,
-                'user_id' => auth()->id()
+                'user_id' => $userId,
             ]);
 
-            throw new BookUnavailableException();
+            throw new BookUnavailableException;
         }
 
         $book->borrowings()->create([
-            'user_id' => auth()->id(),
+            'user_id' => $userId,
             'borrow_date' => now(),
-            'return_date' => null
+            'return_date' => null,
         ]);
 
         Log::info('Book borrowed successfully', [
             'book_id' => $book->id,
-            'user_id' => auth()->id()
+            'user_id' => $userId,
         ]);
-
-        return back()->with('success', 'Book borrowed.');
     }
 
-    public function return(Book $book)
+    public function return(Book $book, int $userId): void
     {
         $borrowing = $book->borrowings()
             ->whereNull('return_date')
             ->first();
 
-        if (!$borrowing) {
-
+        if (! $borrowing) {
             Log::warning('Return failed: book not borrowed', [
                 'book_id' => $book->id,
-                'user_id' => auth()->id()
+                'user_id' => $userId,
             ]);
 
-            throw new BookNotBorrowedException();
+            throw new BookNotBorrowedException;
         }
 
         $borrowing->update([
-            'return_date' => now()
+            'return_date' => now(),
         ]);
 
         Log::info('Book returned successfully', [
             'book_id' => $book->id,
-            'user_id' => auth()->id()
+            'user_id' => $userId,
         ]);
-
-        return back()->with('success', 'Book returned.');
     }
 }

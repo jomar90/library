@@ -20,13 +20,12 @@ class LoginController extends Controller
         // Validation
         $credentials = $request->validate([
             'email' => 'required|email',
-            'password' => 'required'
+            'password' => 'required',
         ]);
 
         // Authentication attempt
         if (Auth::attempt($credentials)) {
 
-            
             $request->session()->regenerate();
 
             return redirect('/')
@@ -34,7 +33,7 @@ class LoginController extends Controller
         }
 
         return back()->withErrors([
-            'email' => 'Invalid credentials'
+            'email' => 'Invalid credentials',
         ]);
     }
 

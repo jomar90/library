@@ -11,6 +11,7 @@ class EmailVerificationController extends Controller
     {
         return view('auth.verify-email');
     }
+
     public function store(Request $request)
     {
         $request->user()->sendEmailVerificationNotification();

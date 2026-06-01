@@ -13,6 +13,7 @@ class PublisherController extends Controller
     public function index()
     {
         $publishers = Publisher::latest()->paginate(5);
+
         return view('publishers.index', compact('publishers'));
     }
 
@@ -45,9 +46,8 @@ class PublisherController extends Controller
         Publisher::create([
             'name' => request('name'),
             'email' => request('email'),
-            'website' => request('website')
+            'website' => request('website'),
         ]);
-
 
         return redirect('/publishers')
             ->with('success', 'Publisher created successfully.');
@@ -73,14 +73,14 @@ class PublisherController extends Controller
         request()->validate([
             'name' => 'required|min:3',
             'email' => 'required' |
-                'email'
+                'email',
             // 'unique:publishers,email,' . $publisher->id
         ]);
 
         $publisher->update([
             'name' => request('name'),
             'email' => request('email'),
-            'website' => request('website')
+            'website' => request('website'),
         ]);
 
         return redirect('/publishers')
@@ -93,6 +93,7 @@ class PublisherController extends Controller
     public function destroy(Publisher $publisher)
     {
         $publisher->delete();
+
         return redirect('/publishers')
             ->with('success', 'Publisher deleted successfully.');
     }

@@ -5,8 +5,6 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-use function Symfony\Component\Translation\t;
-
 class UpdateBookRequest extends FormRequest
 {
     /**
