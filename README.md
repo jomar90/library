@@ -1,44 +1,49 @@
 # Library Management System
 
-A Laravel 12 library management application built as a portfolio project to explore real-world business logic, authorization, API development, testing, and localization.
+A library management application built with Laravel 12 that allows administrators to manage books, publishers, members, and borrowing records through a role-based system.
+
+The project was developed as part of my software development portfolio and focuses on implementing real-world business rules, authorization, API development, testing, and localization.
 
 ## Features
 
-### User Roles
+### Role-Based Access Control
 
-* Admin: full access to all resources
-* User: can create and manage their own books
-* Member: read-only access to the catalogue
+The application supports three user roles:
+
+* **Admin** – full access to all resources and management features
+* **User** – can create, edit, and manage books they have added
+* **Member** – read-only access to the catalogue and book details
 
 ### Library Management
 
-* Book management
-* Publisher management
-* Borrowing and return system
-* Ownership-based authorization
-* Policy-based access control
+* Manage books and publishers
+* Borrow and return books
+* Track borrowing records
+* Prevent invalid borrowing operations through business rules
+* Ownership-based permissions for book management
 
 ### API
 
 * RESTful API endpoints
 * API authentication
 * Rate limiting
-* Resource responses
+* Resource-based JSON responses
 
-### Technical Features
+### Technical Highlights
 
 * Laravel 12
-* PHPUnit feature and unit testing
-* Localization (English and Dutch)
+* PHPUnit unit and feature testing
+* English and Dutch localization
 * Eloquent relationships
+* Policies and middleware authorization
 * Service container bindings
-* Event and listener implementation
+* Events and listeners
 * Third-party API integration
 * PHPStan static analysis
 
 ## Database Structure
 
-Main entities:
+Core entities:
 
 * Users
 * Members
@@ -48,9 +53,9 @@ Main entities:
 
 ## Project Status
 
-Active development.
+This project is currently under active development.
 
-Core functionality is implemented and tested. Additional features, UI improvements, and API enhancements are being added incrementally.
+The core functionality is implemented and tested. Future work includes UI improvements, additional features, and further API enhancements.
 
 ## Screenshots
 
